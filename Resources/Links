@@ -1,0 +1,6 @@
+https://www.openstreetmap.org/#map=17/42.37668/-72.52077
+Google API Key: AIzaSyBeZqRiR3nPq63S8UO2jea40azGhqUepk4
+
+http://taginfo.openstreetmap.org/api/4/key/values?key=amenity&filter=all&lang=en&sortname=count&sortorder=desc&page=2&rp=12&qtype=value&format=json_pretty
+
+http://taginfo.openstreetmap.org/api/4/key/values?key=amenity&filter=all&lang=en&sortname=count&sortorder=desc&page=1&rp=12&qtype=value&format=json_pretty
