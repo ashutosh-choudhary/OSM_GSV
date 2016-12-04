@@ -4,3 +4,38 @@ Google API Key: AIzaSyBeZqRiR3nPq63S8UO2jea40azGhqUepk4
 http://taginfo.openstreetmap.org/api/4/key/values?key=amenity&filter=all&lang=en&sortname=count&sortorder=desc&page=2&rp=12&qtype=value&format=json_pretty
 
 http://taginfo.openstreetmap.org/api/4/key/values?key=amenity&filter=all&lang=en&sortname=count&sortorder=desc&page=1&rp=12&qtype=value&format=json_pretty
+
+445    parking 0.2119 2205171
+1058    place_of_worship 0.0784 815611
+school 0.0763 794148
+bench 0.0652 678358
+restaurant 0.0628 653677
+332    fuel 0.0302 314634
+cafe 0.0239 248594
+fast_food 0.0231 240616
+bank 0.0222 230770
+post_box 0.0204 212679
+pharmacy 0.0181 188713
+waste_basket 0.0178 184900
+recycling 0.0167 173535
+kindergarten 0.0165 171391
+bicycle_parking 0.0163 169724
+grave_yard 0.0154 160779
+toilets 0.0151 156853
+shelter 0.0144 149947
+hospital 0.013 135435
+post_office 0.0128 132830
+drinking_water 0.0127 132197
+pub 0.0122 127297
+atm 0.0107 111512
+bar 0.0105 109652
+public_building 0.0097 101225
+telephone 0.0095 98548
+police 0.0088 91705
+parking_space 0.0087 90761
+hunting_stand 0.0083 86415
+fire_station 0.0082 85050
+townhall 0.0081 84249
+
+theater
+shop

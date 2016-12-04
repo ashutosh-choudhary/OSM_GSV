@@ -21,7 +21,7 @@ class extract_all_classes:
                 }
         :return:
         """
-        wiki_verified = []
+        wiki_verified = {}
         start_scraping_classes = time.time()
 
         total_num_classes = 0
@@ -35,7 +35,7 @@ class extract_all_classes:
                 total_num_classes += 1
                 if raw_data["data"][j]["in_wiki"] == True:
                     total_wiki_verified += 1
-                    wiki_verified.append(raw_data["data"][j]["value"])
+                    wiki_verified[raw_data["data"][j]["value"]] = raw_data["data"][j]["count"]
                     print "extract_all_classes: " + raw_data["data"][j]["value"] + " " + str(raw_data["data"][j]["fraction"]) + " " + str(raw_data["data"][j]["count"])
 
         print "\n" + "extract_all_classes: " + "Total: " + str(total_num_classes)
@@ -46,5 +46,5 @@ class extract_all_classes:
         time_scrapping_classes_m, time_scrapping_classes_s = divmod(time_scrapping_classes_s, 60)
         time_scrapping_classes_h, time_scrapping_classes_m = divmod(time_scrapping_classes_m, 60)
         print "extract_all_classes: " + "Time taken to process all classes: %d hours %02d mins %02d secs" % (time_scrapping_classes_h, time_scrapping_classes_m, time_scrapping_classes_s)
-
+        #wiki_verified_sorted = sorted(wiki_verified.items(), key=lambda x: x[1], reverse=True)
         return wiki_verified
