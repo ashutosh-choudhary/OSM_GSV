@@ -1,10 +1,12 @@
 import scipy.io
 import constants as c
+import urllib2
 import urllib
 import json
 import collections as collec
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 NUM_OF_ELEMS_PLOT = 20
 
@@ -15,6 +17,7 @@ class extract_images:
 
     def main(self, classes_dict):
 
+        #Extracting matlab file to access image URLs from SUN database
         print "extract_images: " + "Loading mat..."
 
         mat = scipy.io.loadmat('../Data/SUN_urls.mat')
@@ -53,44 +56,88 @@ class extract_images:
         1.0
         MATLAB 5.0 MAT-file, Platform: PCWIN64, Created on: Mon Jan 17 22:26:14 2011
         """
-        #url = mat["SUN"][0][0][2][0][0][0]
-        #print url
-        #urllib.urlretrieve(url, "../Data/images/test_image.jpg")
+     #
+     #   url = mat["SUN"][0][0][2][0][0][0]
+     #   print url
+     #   try:
+     #       response = urllib2.urlopen(url)
+     #   except urllib2.HTTPError, e:
+     #       print "extract_images: Error: Couldn't open url " + url + " due to error code " + str(e.code)
+     #   else:
+     #       print "extract_images: Downloading image"
+     #       local_path = "../Data/images/" + "t/"
+     #       file_name = "test_image.jpg"
+     #       if not os.path.exists(local_path):
+     #           os.makedirs(local_path)
+     #       full_filename = os.path.join(local_path, file_name)
+     #       urllib.urlretrieve(url, full_filename)
+     #
 
         print "extract_images: " + "Number of classes: "
         print "extract_images: " + str(len(mat["SUN"][0]))
-        num_available_classes = len(mat["SUN"][0])
+        num_available_img_classes = len(mat["SUN"][0])
         print "extract_images: " + "Number of images per class: "
         print "extract_images: " + str(len(mat["SUN"][0][0][2][0]))
 
         print "extract_images: " + mat["SUN"][0][899][2][0][0][0]
         print "extract_images: " + str(type(mat["SUN"][0][899][2][0][0][0]))
         print "extract_images: " + str(len(mat["SUN"][0][899][2][0][0][0]))
-        #http: // thesaurus.altervista.org / thesaurus / v1?key = unXYIXL2B0RpNA7V8XuG & word = fan & language = en_US & output = xml
-        #turl = c.THESAURUS_URL+"?key="+c.THESAURUS_KEY+"&word="+class_word+"&language="+c.THESAURUS_LANG+"&output=json"
-        classes = classes_dict.keys()
-        print "extract_images: " + classes[0]
 
+        #Getting all available image labels from SUN database
         available_img_labels = []
         available_img_counts = []
-        print num_available_classes
-        for img in range(0, num_available_classes):
+        images_dict = {}
+
+        for img in range(0, num_available_img_classes):
             available_img_labels.append(mat["SUN"][0][img][0][0])
             available_img_counts.append(len(mat["SUN"][0][img][2][0]))
-            #print mat["SUN"][0][img]
-        corresponding_labels = self.find_corresponding_labels(classes, available_img_labels, available_img_counts)
+
+        for img in range(0, num_available_img_classes):
+            path_snippet = available_img_labels[img].split("\\")
+            available_img_labels[img] = (path_snippet[1] + ' ' + path_snippet[2]).replace("_", " ") if len(path_snippet) == 3 else path_snippet[1].replace("_", " ")
+            images_dict[available_img_labels[img]] = available_img_counts[img]
+
+        #Getting a subset of image class labels which is a subset of image database corresponding to amenties tag
+        corresponding_labels = self.find_corresponding_labels(classes_dict, available_img_labels, available_img_counts)
 
 
-        # Sort both dictiornaries and send for plot
-        corresponding_labels_sorted = sorted(corresponding_labels.items(), key=lambda x: x[1][1], reverse=True)
+        # Sort both dictionaries and send for plot
         classes_sorted = sorted(classes_dict.items(), key=lambda x: x[1], reverse=True)
-        od_corresponding_labels = collec.OrderedDict(corresponding_labels_sorted[:NUM_OF_ELEMS_PLOT])
+        images_dict_sorted = sorted(images_dict.items(), key=lambda x: x[1], reverse=True)
+        corresponding_labels_sorted = sorted(corresponding_labels.items(), key=lambda x: x[1][1], reverse=True)
         od_classes = collec.OrderedDict(classes_sorted[:NUM_OF_ELEMS_PLOT])
-        self.plot_class_data_availability(od_classes)
-        self.plot_image_data_availability(od_corresponding_labels)
-        self.plot_class_with_image_data(classes_dict, collec.OrderedDict(corresponding_labels_sorted))
+        od_images = collec.OrderedDict(images_dict_sorted[:NUM_OF_ELEMS_PLOT])
+        od_corresponding_labels = collec.OrderedDict(corresponding_labels_sorted[:NUM_OF_ELEMS_PLOT])
 
-        return ['parking lot', 'church', 'fuel', 'shopfront', 'theater']
+        self.plot_class_data_availability(od_classes)
+        self.plot_image_data_availability(od_images)
+        self.plot_class_with_image_data(collec.OrderedDict(classes_sorted), collec.OrderedDict(corresponding_labels_sorted))
+
+        ############# Downloading the dataset ###############
+
+        #write a function to do this
+        selected_classes =  [u'p\\parking_lot', u'c\\church\\outdoor', u'g\\gas_station', u's\\shopfront']
+        class_folders = [x.split("\\")[1] for x in selected_classes]
+        for class_label in range(0, num_available_img_classes):
+            if mat["SUN"][0][class_label][0][0] in selected_classes:
+                num_images = len(mat["SUN"][0][class_label][2][0])
+                for i in range(num_images):
+                    url = mat["SUN"][0][class_label][2][0][i][0]
+                    print "extract_images: downloading " + url
+                    try:
+                        response = urllib2.urlopen(url)
+                    except urllib2.HTTPError, e:
+                        print "extract_images: Error: Couldn't open url " + url + " due to error code " + str(e.code)
+                    else:
+                        rel_path = class_folders[selected_classes.index(mat["SUN"][0][class_label][0][0])]
+                        local_path = "../Data/images/" + rel_path + "/"
+                        file_name = rel_path + "_" + str(i) + ".jpg"
+                        if not os.path.exists(local_path):
+                            os.makedirs(local_path)
+                        full_filename = os.path.join(local_path, file_name)
+                        print "extract_images: Downloading image " + url
+                        urllib.urlretrieve(url, full_filename)
+
 
     def plot_class_data_availability(self, dict_plot):
         fig = plt.figure()
@@ -98,7 +145,7 @@ class extract_images:
         bin = np.arange(len(dict_plot))
         plt.bar(bin, dict_plot.values(), align='center')
         plt.xticks(bin, dict_plot.keys(), rotation='vertical')
-        plt.xlim([0,bin.size])
+        plt.xlim([-0.5,bin.size])
         plt.title("Count of class tag")
         plt.xlabel("Classes")
         plt.ylabel("Number of tags in OSM data")
@@ -108,8 +155,8 @@ class extract_images:
         fig = plt.figure()
         ax = fig.add_subplot(111)
         bin = np.arange(len(dict_images))
-        plt.bar(bin, np.array(dict_images.values())[:,1], align='center')
-        plt.xlim([0,bin.size])
+        plt.bar(bin, np.array(dict_images.values()), align='center')
+        plt.xlim([-0.5,bin.size])
         plt.xticks(bin, dict_images.keys(), rotation='vertical')
         plt.title("Count of images")
         plt.xlabel("Image Labels")
@@ -123,21 +170,26 @@ class extract_images:
         label_index = 0
         dict_tags = {}
         bar_width = 0.45
+        len_classes = float(len(dict_plot))
+        len_images = float(len(dict_images))
 
         for class_label, tag_count in dict_plot.items():
             class_label = class_label.replace("_"," ")
             image_index = dict_images.keys().index(class_label)
-            total_index = label_index + image_index
+            total_index = label_index/len_classes + image_index/len_images
+            print class_label + " " + str(label_index) + " + " + str(image_index) + " = " + str(total_index)
             dict_tags[class_label] = [tag_count, dict_images[class_label][1], total_index]
+            label_index += 1
 
         tags_sorted = sorted(dict_tags.items(), key=lambda  x: x[1][2])
+        print tags_sorted
         od_tags_labels = collec.OrderedDict(tags_sorted[:NUM_OF_ELEMS_PLOT])
         num_labels = np.array(od_tags_labels.values())[:, 0]
         num_images = np.array(od_tags_labels.values())[:, 1]
         bin = np.arange(len(od_tags_labels))
         rects1 = plt.bar(bin, num_labels*100/np.mean(num_labels),bar_width, label='Num of Tags', align='center', color='b')
         rects2 = plt.bar(bin + bar_width, num_images*100/np.mean(num_images),bar_width, label='Numn of Images', align='center', color='r')
-        plt.xlim([0,bin.size])
+        plt.xlim([-bar_width,bin.size])
         plt.xticks(range(len(od_tags_labels)), od_tags_labels.keys(), rotation='vertical')
         plt.title("Trade off between available data and class labels")
         plt.xlabel("Class labels")
@@ -145,14 +197,15 @@ class extract_images:
         plt.legend()
         plt.show()
 
-    def find_corresponding_labels(self, classes, img_data, img_cnt):
-        class_word = classes
-        for j in range(0, len(classes)):
-            classes[j] = classes[j].replace("_", " ")
-            print "extract_images: c: " + classes[j]
+    def find_corresponding_labels(self, classes_dict, img_data, img_cnt):
+        class_word = classes_dict.keys()
+        class_word_cnt = classes_dict.values()
+        for j in range(0, len(class_word)):
+            class_word[j] = class_word[j].replace("_", " ")
+            print "extract_images: c: " + class_word[j] + " " + str(class_word_cnt[j])
 
         for i in range(0, len(img_data)):
-            img_data[i] = img_data[i].split("\\")[1].replace("_", " ")
+    #        img_data[i] = img_data[i].split("\\")[1].replace("_", " ")
             print "extract_images: i: " + img_data[i] + " " + str(img_cnt[i])
 
         synonyms_dict = {}
@@ -164,6 +217,12 @@ class extract_images:
             turl = c.THESAURUS_URL %class_word[cw]
             response = urllib.urlopen(turl)
             raw_data = json.loads(response.read())
+    #        response = urllib2.urlopen(turl)
+    #        if response.code ==  200:
+    #            raw_data = json.loads(response.read())
+    #        else:
+    #            print "Couldn't open url " + turl + " due to error code " + response.code
+    #
             if not raw_data.has_key("error"):
                 num_respose_fields = len(raw_data["response"])
                 for rf in range(0, num_respose_fields):

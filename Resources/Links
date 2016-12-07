@@ -37,5 +37,26 @@ hunting_stand 0.0083 86415
 fire_station 0.0082 85050
 townhall 0.0081 84249
 
-theater
-shop
+Feature Detection and Description (Extraction) -
+
+Algorithm based features extraction:
+Color Histogram
+Harris Corner Detection
+Shi-Tomasi Corner Detector and Good Features to Track
+Scale-Invariant Feature Transform (SIFT)
+Sped-Up Robust Features (SURF)
+FAST Algorithm for Corner Detection (FAST)
+Binary Robust Independent Elementary Features (BRIEF)
+Oriented FAST and Rotated BRIEF (ORB)
+Vector of Locally Aggregated Descriptors (VLAD)
+Histogram of Gradients (HOG)
+GIST
+Local Binary Patterns (LBP)
+
+Neural Networks or unsupervised feature extraction:
+Sparse Coding
+Auto Encoders
+Restricted Boltzmann Machines (RBM)
+Principal Component Analysis (PCA)
+Independent Component Analysis (ICA)
+K-Means

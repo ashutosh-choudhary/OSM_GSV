@@ -1,0 +1,151 @@
+Ashutoshs-MacBook-Pro:Downloads ashutoshchoudhary$ chmod 400 my-ML-project.pem
+Ashutoshs-MacBook-Pro:Downloads ashutoshchoudhary$ ssh -i my-ML-project.pem ubuntu@ec2-52-53-253-148.us-west-1.compute.amazonaws.com
+The authenticity of host 'ec2-52-53-253-148.us-west-1.compute.amazonaws.com (52.53.253.148)' can't be established.
+ECDSA key fingerprint is SHA256:+vbyEiWK11xFZNsXPIe6F3nQcUYhyVa57RE5NkybE1A.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'ec2-52-53-253-148.us-west-1.compute.amazonaws.com,52.53.253.148' (ECDSA) to the list of known hosts.
+Welcome to Ubuntu 14.04.1 LTS (GNU/Linux 3.13.0-40-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+  System information as of Wed Dec  7 02:07:33 UTC 2016
+
+  System load: 0.3               Memory usage: 0%   Processes:       103
+  Usage of /:  28.8% of 7.75GB   Swap usage:   0%   Users logged in: 0
+
+  Graph this data and manage this system at:
+    https://landscape.canonical.com/
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+173 packages can be updated.
+86 updates are security updates.
+
+
+Last login: Tue Dec 16 13:17:35 2014 from dynamic-78-8-10-51.ssp.dialog.net.pl
+_____________________________________________________________________
+WARNING! Your environment specifies an invalid locale.
+ This can affect your user experience significantly, including the
+ ability to manage packages. You may install the locales by running:
+
+   sudo apt-get install language-pack-UTF-8
+     or
+   sudo locale-gen UTF-8
+
+To see all available language packs, run:
+   apt-cache search "^language-pack-[a-z][a-z]$"
+To disable this message for all users, run:
+   sudo touch /var/lib/cloud/instance/locale-check.skip
+_____________________________________________________________________
+
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$ pwd
+/home/ubuntu
+ubuntu@ip-172-31-22-8:~$ df -H
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/xvda1      8.4G  2.4G  5.6G  30% /
+none            4.1k     0  4.1k   0% /sys/fs/cgroup
+udev             16G   13k   16G   1% /dev
+tmpfs           3.2G  189k  3.2G   1% /run
+none            5.3M     0  5.3M   0% /run/lock
+none             16G     0   16G   0% /run/shm
+none            105M     0  105M   0% /run/user
+ubuntu@ip-172-31-22-8:~$ pwd
+/home/ubuntu
+ubuntu@ip-172-31-22-8:~$ cd /dev/
+ubuntu@ip-172-31-22-8:/dev$ ls
+autofs           loop7               snd     tty33  tty62   ttyS5
+block            mapper              stderr  tty34  tty63   ttyS6
+btrfs-control    mem                 stdin   tty35  tty7    ttyS7
+char             net                 stdout  tty36  tty8    ttyS8
+console          network_latency     tty     tty37  tty9    ttyS9
+core             network_throughput  tty0    tty38  ttyS0   ttyprintk
+cpu              null                tty1    tty39  ttyS1   uinput
+cpu_dma_latency  port                tty10   tty4   ttyS10  urandom
+disk             ppp                 tty11   tty40  ttyS11  vcs
+ecryptfs         psaux               tty12   tty41  ttyS12  vcs1
+fd               ptmx                tty13   tty42  ttyS13  vcs2
+full             pts                 tty14   tty43  ttyS14  vcs3
+fuse             ram0                tty15   tty44  ttyS15  vcs4
+hvc0             ram1                tty16   tty45  ttyS16  vcs5
+hvc1             ram10               tty17   tty46  ttyS17  vcs6
+hvc2             ram11               tty18   tty47  ttyS18  vcs7
+hvc3             ram12               tty19   tty48  ttyS19  vcsa
+hvc4             ram13               tty2    tty49  ttyS2   vcsa1
+hvc5             ram14               tty20   tty5   ttyS20  vcsa2
+hvc6             ram15               tty21   tty50  ttyS21  vcsa3
+hvc7             ram2                tty22   tty51  ttyS22  vcsa4
+input            ram3                tty23   tty52  ttyS23  vcsa5
+kmsg             ram4                tty24   tty53  ttyS24  vcsa6
+log              ram5                tty25   tty54  ttyS25  vcsa7
+loop-control     ram6                tty26   tty55  ttyS26  vga_arbiter
+loop0            ram7                tty27   tty56  ttyS27  xen
+loop1            ram8                tty28   tty57  ttyS28  xvda1
+loop2            ram9                tty29   tty58  ttyS29  zero
+loop3            random              tty3    tty59  ttyS3
+loop4            rfkill              tty30   tty6   ttyS30
+loop5            shm                 tty31   tty60  ttyS31
+loop6            snapshot            tty32   tty61  ttyS4
+ubuntu@ip-172-31-22-8:/dev$
+ubuntu@ip-172-31-22-8:/dev$
+ubuntu@ip-172-31-22-8:/dev$
+ubuntu@ip-172-31-22-8:/dev$
+ubuntu@ip-172-31-22-8:/dev$ cd /mnt/
+ubuntu@ip-172-31-22-8:/mnt$ ls
+ubuntu@ip-172-31-22-8:/mnt$ df -H
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/xvda1      8.4G  2.4G  5.6G  30% /
+none            4.1k     0  4.1k   0% /sys/fs/cgroup
+udev             16G   13k   16G   1% /dev
+tmpfs           3.2G  189k  3.2G   1% /run
+none            5.3M     0  5.3M   0% /run/lock
+none             16G     0   16G   0% /run/shm
+none            105M     0  105M   0% /run/user
+ubuntu@ip-172-31-22-8:/mnt$ pwd
+/mnt
+ubuntu@ip-172-31-22-8:/mnt$ cd /home/ubuntu/
+ubuntu@ip-172-31-22-8:~$ ls
+Anaconda2-2.4.0-Linux-x86_64.sh  anaconda2
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$ python
+Python 2.7.10 |Anaconda 2.4.0 (64-bit)| (default, Oct 19 2015, 18:04:42)
+[GCC 4.4.7 20120313 (Red Hat 4.4.7-1)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+Anaconda is brought to you by Continuum Analytics.
+Please check out: http://continuum.io/thanks and https://anaconda.org
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> quit()
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$ python
+Python 2.7.10 |Anaconda 2.4.0 (64-bit)| (default, Oct 19 2015, 18:04:42)
+[GCC 4.4.7 20120313 (Red Hat 4.4.7-1)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+Anaconda is brought to you by Continuum Analytics.
+Please check out: http://continuum.io/thanks and https://anaconda.org
+>>>
+>>>
+>>>
+>>>
+>>> import numpy
+>>>
+>>>
+>>> quit()
+ubuntu@ip-172-31-22-8:~$
+ubuntu@ip-172-31-22-8:~$
