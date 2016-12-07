@@ -149,3 +149,10 @@ Please check out: http://continuum.io/thanks and https://anaconda.org
 >>> quit()
 ubuntu@ip-172-31-22-8:~$
 ubuntu@ip-172-31-22-8:~$
+
+
+pickle: Time taken to process all classes: 8 hours 22 mins 01 secs
+
+
+model_estimation: base_main:  Loaded pickled data successfully
+model_estimation: base_main:  : (2056, 960) (2056,) (513, 960) (513,)
