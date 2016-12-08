@@ -43,6 +43,9 @@ class features_GIST:
                     #Appending y_label data
                     data_set_row.append(c.LABEL_MAP[class_name])
                     data_set.append(data_set_row)
+                    # A plug for testing
+                    if k > 2:
+                        break
 
         print "\nfeature_ext_gist: " + "Dataset created"
         print "feature_ext_gist: " + "N = " + str(len(data_set))
@@ -101,7 +104,7 @@ class features_GIST:
         :param data_set: list :the data set in question
         :return: string: the absolute path of the dataset generated
         """
-        DIR = c.PATH_DATA_PICKLE + self.v_set
+        DIR = c.PATH_DATA_GIST_PICKLE + self.v_set
         if not os.path.exists(DIR):
             os.makedirs(DIR)
         filename = self.v_set.split("/")[1] + ".p"
