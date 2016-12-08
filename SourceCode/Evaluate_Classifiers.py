@@ -119,8 +119,6 @@ class evaluate_classifiers:
         features_test = np.array(test_data)[:,:-1]
         labels_test = np.array(test_data)[:,-1].astype(int)
         #print "model_estimation: base_main: ", ":", features_train.shape, labels_train.shape, features_test.shape, labels_test.shape
-        print np.isnan(np.sum(features_train))
-        print np.isnan(np.sum(labels_train))
         if self.NORM:
             n_features_train = preprocessing.scale(features_train)
             n_features_test = preprocessing.scale(features_test)
