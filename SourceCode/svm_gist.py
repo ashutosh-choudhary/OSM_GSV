@@ -217,8 +217,8 @@ class svm_gist:
         n_features_train = preprocessing.scale(features_train)
         n_features_test = preprocessing.scale(features_test)
 
-        #return n_features_train, labels_train, n_features_test, labels_test
-        return n_features_train[:100], labels_train[:100], n_features_test[:100], labels_test[:100]
+        return n_features_train, labels_train, n_features_test, labels_test
+        #return n_features_train[:100], labels_train[:100], n_features_test[:100], labels_test[:100]
 
 sg = svm_gist()
 X, y, XT, yT = sg.load_data()
