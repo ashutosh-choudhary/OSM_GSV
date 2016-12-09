@@ -33,9 +33,9 @@ class svm_gist:
         num_instances = len(X)
         print "\n\nInside Hyperparameter Optimization: "
 
-        parameters = {'kernel':['rbf', 'linear'], 'C': [10 ** x for x in range(-3, 4)], 'gamma': [10 ** x for x in range(-3, 4)]}
-        # parameters = {'C': [10 ** x for x in range(0, 2)], 'gamma': [10 ** x for x in range(-2, 2)]}
-        grid = GridSearchCV(SVC(), param_grid=parameters, scoring=scoring, cv=10, verbose=5)
+        #parameters = {'kernel':['rbf', 'linear'], 'C': [10 ** x for x in range(-3, 4)], 'gamma': [10 ** x for x in range(-3, 4)]}
+        parameters = {'kernel':['rbf', 'linear'], 'C': [10 ** x for x in range(-2, 2)], 'gamma': [10 ** x for x in range(-2, 2)]}
+        grid = GridSearchCV(SVC(n_jobs=5), param_grid=parameters, scoring=scoring, cv=5, verbose=5)
         grid.fit(X, Y)
 
         print "================================================"
@@ -44,11 +44,20 @@ class svm_gist:
         best_score_coarse = grid.best_score_
         best_param_coarse = grid.best_params_
 
+        # Save the clf
+        DIR = c.PATH_RESOURCES_HOME + 'results/'
+        if not os.path.exists(DIR):
+            os.makedirs(DIR)
+
+        filename_grid = DIR + 'best_svm_gist_coarse.pkl'
+        print 'svm_gist: ', 'saving file ...', filename_grid
+        joblib.dump(grid, filename_grid)
+
         parameters_fine = {'kernel':['rbf', 'linear'], 'C': np.ndarray.tolist(
             np.logspace(np.log10(grid.best_params_['C']) - 1, np.log10(grid.best_params_['C']) + 1, 5)),
                            'gamma': np.ndarray.tolist(np.logspace(np.log10(grid.best_params_['gamma']) - 1,
                                                                   np.log10(grid.best_params_['gamma']) + 1, 5))}
-        grid_fine = GridSearchCV(SVC(), param_grid=parameters_fine, scoring=scoring, cv=10, verbose=5)
+        grid_fine = GridSearchCV(SVC(n_jobs=5), param_grid=parameters_fine, scoring=scoring, cv=5, verbose=5)
         grid_fine.fit(X, Y)
 
         print "================================================"
@@ -67,7 +76,8 @@ class svm_gist:
         print 'svm_gist: ', 'saving file ...', filename_fine
         joblib.dump(grid, filename_fine)
 
-
+    def plot_svm(self):
+        self
         #print "\nStart Plotting Coarse hyperparameter plot..."
         #scores = [(-1 * x[1]) for x in grid.grid_scores_]
         #scores = np.array(scores).reshape(len(parameters['C']), len(parameters['gamma']))
@@ -96,7 +106,7 @@ class svm_gist:
         #plt.savefig('../Figures/Robotic_Arm_SVR_Hyperparameter_Fine.png')
         #plt.gcf().clear()
 
-    def hyperparameter_optimization_with_feature_selection(self, X, Y):
+    def hyperparameter_optimization_mlcp_gist(self, X, Y):
         """
         Complete processing of Bank Queue dataset including
         feature selection and hyper-parameter optimization
@@ -108,10 +118,8 @@ class svm_gist:
         best_model_total = ""
         best_params_total = {}
 
-        # KNN with selected features
-        nn = MLPClassifier(hidden_layer_sizes=50,alpha=.01)
-        # SVc with selected features
-        svc = SVC()
+        # MLC Perceptron with selected features
+        nn = MLPClassifier(alpha=.01)
 
         # NN with selected features
         parameters = {'hidden_layer_sizes': [25, 50, 100, 150]}
@@ -133,52 +141,6 @@ class svm_gist:
         if grid.best_score_ > best_score_total:
             best_score_total = grid.best_score_
             best_params_total = grid.best_params_
-
-        #for i in range(2, 10): #X.shape[1]
-        #    sel = SelectKBest(f_classif(X, Y), k=i)
-        #    sel.fit(X, Y)
-        #    new_feature_set = sel.transform(X)
-        #    print "Exp Feature set: ", new_feature_set.shape
-        #
-        #    # SVM
-        #    parameters = {'kernel':['rbf', 'linear'], 'C': [10 ** x for x in range(0, 2)], 'gamma': [10 ** x for x in range(-2, 2)]}
-        #    grid = GridSearchCV(SVC(), param_grid=parameters, scoring=scoring, cv=10, verbose=5)
-        #    grid.fit(new_feature_set, Y)
-        #    print "======================================================="
-        #    print("The best parameters for SVM and %d are %s with a score of %0.6f"
-        #          % (i, grid.best_params_, grid.best_score_))
-        #
-        #    if grid.best_score_ > best_score_total:
-        #        print("SVM with %d features is best overall now." % (i))
-        #        best_score_total = grid.best_score_
-        #        best_params_total = grid.best_params_
-        #        best_model_total = "SVM with " + str(i) + " features"
-        #
-        #    #RFR
-        #    #rfr = RandomForestRegressor()
-        #    #parameters = {'n_estimators': [120,300,500,800,1200], 'max_depth': [5,8,15,25,30,None], 'min_samples_split': [1,2,5,10,15,100], 'min_samples_leaf': [1,2,5,10], 'max_features':['log2','sqrt',None]}
-        #    #grid = GridSearchCV(rfr, param_grid=parameters, scoring=scoring, cv=5, verbose=5)
-        #    #grid.fit(X, Y)
-        #    #print "==============================="
-        #    #print "Best Hyperparameter Values:::"
-        #    #print("The best parameters are %s with a score of %0.6f"
-        #    #      % (grid.best_params_, grid.best_score_))
-        #    #
-        #    #if grid.best_score_ > best_score_total:
-        #    #    best_score_total = grid.best_score_
-        #    #    print "rfr"
-        ##    best_model_total = "rfr"
-        #
-        #    print "Best model for BankQues User data ", best_model_total
-        #    print "Best params ", best_params_total
-        #    print "Best score ", best_score_total
-        #
-        #    filename_grid = DIR + 'best_gist.pkl'
-        #    print 'nn_gist: ', 'saving file ...', filename_grid
-        #    joblib.dump(best_params_total, filename_grid)
-        #    pickle.dump([best_model_total, best_score_total], open(DIR+'best.p', 'w'))
-
-
 
     def load_clf(self):
         DIR = DIR = c.PATH_RESOURCES_HOME + 'results/'
@@ -225,4 +187,5 @@ X, y, XT, yT = sg.load_data()
 #print (X > 0)
 sg.hyperparameter_optimization_svm_gist(X, y)
 sg.load_clf()
-sg.hyperparameter_optimization_with_feature_selection(X, y)
+sg.hyperparameter_optimization_mlcp_gist(X, y)
+
