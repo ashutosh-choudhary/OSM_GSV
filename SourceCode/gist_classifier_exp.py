@@ -35,7 +35,7 @@ class svm_gist:
 
         #parameters = {'kernel':['rbf', 'linear'], 'C': [10 ** x for x in range(-3, 4)], 'gamma': [10 ** x for x in range(-3, 4)]}
         parameters = {'kernel':['rbf', 'linear'], 'C': [10 ** x for x in range(-2, 2)], 'gamma': [10 ** x for x in range(-2, 2)]}
-        grid = GridSearchCV(SVC(n_jobs=5), param_grid=parameters, scoring=scoring, cv=5, verbose=5)
+        grid = GridSearchCV(SVC(), param_grid=parameters, scoring=scoring, cv=5, verbose=5)
         grid.fit(X, Y)
 
         print "================================================"
@@ -57,7 +57,7 @@ class svm_gist:
             np.logspace(np.log10(grid.best_params_['C']) - 1, np.log10(grid.best_params_['C']) + 1, 5)),
                            'gamma': np.ndarray.tolist(np.logspace(np.log10(grid.best_params_['gamma']) - 1,
                                                                   np.log10(grid.best_params_['gamma']) + 1, 5))}
-        grid_fine = GridSearchCV(SVC(n_jobs=5), param_grid=parameters_fine, scoring=scoring, cv=5, verbose=5)
+        grid_fine = GridSearchCV(SVC(), param_grid=parameters_fine, scoring=scoring, cv=5, verbose=5)
         grid_fine.fit(X, Y)
 
         print "================================================"
