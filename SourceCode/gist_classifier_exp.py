@@ -51,7 +51,7 @@ class svm_gist:
 
         filename_grid = DIR + 'best_svm_gist_coarse.pkl'
         print 'svm_gist: ', 'saving file ...', filename_grid
-        joblib.dump(grid, filename_grid)
+        #joblib.dump(grid, filename_grid)
 
         parameters_fine = {'kernel':['rbf', 'linear'], 'C': np.ndarray.tolist(
             np.logspace(np.log10(grid.best_params_['C']) - 1, np.log10(grid.best_params_['C']) + 1, 5)),
