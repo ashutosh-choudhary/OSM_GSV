@@ -10,6 +10,8 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.neural_network import MLPClassifier
 from sklearn.feature_selection import chi2
 from sklearn.feature_selection import f_classif
+from sklearn.metrics import confusion_matrix
+
 PIPELINE_TYPE_TRAIN = "TRAIN"
 PIPELINE_TYPE_TEST = "TEST"
 seed = 7
@@ -45,13 +47,13 @@ class svm_gist:
         best_param_coarse = grid.best_params_
 
         # Save the clf
-        DIR = c.PATH_RESOURCES_HOME + 'results/'
+        DIR = c.PATH_MODEL_HOME
         if not os.path.exists(DIR):
             os.makedirs(DIR)
 
-        filename_grid = DIR + 'best_svm_gist_coarse.pkl'
-        print 'svm_gist: ', 'saving file ...', filename_grid
-        #joblib.dump(grid, filename_grid)
+    #    filename_grid = DIR + c.FILENAME_BEST_SVM_COARSE
+    #    print 'svm_gist: ', 'saving file ...', filename_grid
+    #    joblib.dump(grid, filename_grid)
 
         parameters_fine = {'kernel':['rbf', 'linear'], 'C': np.ndarray.tolist(
             np.logspace(np.log10(grid.best_params_['C']) - 1, np.log10(grid.best_params_['C']) + 1, 5)),
@@ -65,46 +67,16 @@ class svm_gist:
               % (grid_fine.best_params_, grid_fine.best_score_))
 
         # Save the clf
-        DIR = c.PATH_RESOURCES_HOME + 'results/'
+        DIR = c.PATH_MODEL_HOME
         if not os.path.exists(DIR):
             os.makedirs(DIR)
 
-        filename_grid = DIR + 'best_svm_gist_coarse.pkl'
+        filename_grid = DIR + c.FILENAME_BEST_SVM_COARSE
         print 'svm_gist: ', 'saving file ...', filename_grid
         joblib.dump(grid, filename_grid)
-        filename_fine = DIR + 'best_svm_gist_fine.pkl'
+        filename_fine = DIR + c.FILENAME_BEST_SVM_FINE
         print 'svm_gist: ', 'saving file ...', filename_fine
         joblib.dump(grid, filename_fine)
-
-    def plot_svm(self):
-        self
-        #print "\nStart Plotting Coarse hyperparameter plot..."
-        #scores = [(-1 * x[1]) for x in grid.grid_scores_]
-        #scores = np.array(scores).reshape(len(parameters['C']), len(parameters['gamma']))
-        #
-        #for ind, i in enumerate(parameters['C']):
-        #    plt.plot(np.log10(parameters['gamma']), scores[ind], label='C: ' + str(i))
-        #
-        #plt.title('Robotic Arm SVR Hyperparameters optimization')
-        #plt.legend()
-        #plt.xlabel('Gamma')
-        #plt.ylabel('Mean Error')
-        #plt.savefig('../Figures/Robotic_Arm_SVR_Hyperparameter.png')
-        #plt.gcf().clear()
-        #
-        #print "\nStart Plotting Fine tuning hyperparameter plot..."
-        #scores = [(-1 * x[1]) for x in grid_fine.grid_scores_]
-        #scores = np.array(scores).reshape(len(parameters_fine['C']), len(parameters_fine['gamma']))
-        #
-        #for ind, i in enumerate(parameters_fine['C']):
-        #    plt.plot(np.log10(parameters_fine['gamma']), scores[ind], label='C: ' + str(i))
-        #
-        #plt.title('Robotic Arm SVR Hyperparameters optimization - Fine Tuning')
-        #plt.legend()
-        #plt.xlabel('Gamma')
-        #plt.ylabel('Mean Error')
-        #plt.savefig('../Figures/Robotic_Arm_SVR_Hyperparameter_Fine.png')
-        #plt.gcf().clear()
 
     def hyperparameter_optimization_mlcp_gist(self, X, Y):
         """
@@ -130,11 +102,11 @@ class svm_gist:
               % (grid.best_params_, grid.best_score_))
 
         # Save the clf
-        DIR = c.PATH_RESOURCES_HOME + 'results/'
+        DIR = c.PATH_MODEL_HOME
         if not os.path.exists(DIR):
             os.makedirs(DIR)
 
-        filename_grid = DIR + 'best_nn_gist_coarse.pkl'
+        filename_grid = DIR + c.FILENAME_BEST_NN_COARSE
         print 'nn_gist: ', 'saving file ...', filename_grid
         joblib.dump(grid, filename_grid)
 
@@ -142,26 +114,55 @@ class svm_gist:
             best_score_total = grid.best_score_
             best_params_total = grid.best_params_
 
-    def load_clf(self):
-        DIR = DIR = c.PATH_RESOURCES_HOME + 'results/'
-        filename_grid = DIR + 'best_svm_gist_coarse.pkl'
+    def final_test_svm(self):
+        X, y, XT, yT = self.load_data()
+        svm = self.load_clf_svm()
+        y_pred = svm.best_estimator_.predict(XT)
+        score = svm.best_estimator_.score(XT, yT)
+        cnf_metrix = confusion_matrix(y_pred, yT)
+        print "Score: ", score
+        print "cnf_metrix: ", cnf_metrix
+
+    def final_test_nn(self):
+        X, y, XT, yT = self.load_data()
+        nn = self.load_clf_nn()
+        y_pred = nn.best_estimator_.predict(XT)
+        score = nn.best_estimator_.score(XT, yT)
+        cnf_metrix = confusion_matrix(y_pred, yT)
+        print 'MLP Perceptron'
+        print "Score: ", score
+        print "cnf_metrix: ", cnf_metrix
+
+    def load_clf_svm(self):
+        DIR = c.PATH_MODEL_HOME
+        filename_grid = DIR + c.FILENAME_BEST_SVM_COARSE
         print 'svm_gist: ', 'found file ...', filename_grid
         grid = joblib.load(filename_grid)
         best_score_coarse = grid.best_score_
         best_param_coarse = grid.best_params_
 
-        filename_fine = DIR + 'best_svm_gist_fine.pkl'
+        filename_fine = DIR + c.FILENAME_BEST_SVM_FINE
         print 'svm_gist: ', 'found file ...', filename_fine
         grid_fine = joblib.load(filename_fine)
 
         if grid_fine.best_score_ > best_score_coarse:
             print "\n Found a better fine tunes parameter set:"
+            best_grid = grid_fine
             best_score = grid_fine.best_score_
             best_params = grid_fine.best_params_
         else:
+            best_grid = grid
             best_score = best_score_coarse
             best_params = best_param_coarse
         print("The final best parameters are %s with a score of %0.6f" % (best_params, best_score))
+        return best_grid
+
+    def load_clf_nn(self):
+        DIR = c.PATH_MODEL_HOME
+        filename_grid = DIR + c.FILENAME_BEST_NN_COARSE
+        print 'nn_gist: ', 'found file ...', filename_grid
+        grid = joblib.load(filename_grid)
+        return grid
 
     def load_data(self):
 
@@ -181,11 +182,4 @@ class svm_gist:
 
         return n_features_train, labels_train, n_features_test, labels_test
         #return n_features_train[:100], labels_train[:100], n_features_test[:100], labels_test[:100]
-
-sg = svm_gist()
-X, y, XT, yT = sg.load_data()
-#print (X > 0)
-sg.hyperparameter_optimization_svm_gist(X, y)
-sg.load_clf()
-sg.hyperparameter_optimization_mlcp_gist(X, y)
 

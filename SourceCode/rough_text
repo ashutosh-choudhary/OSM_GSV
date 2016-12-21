@@ -1,0 +1,77 @@
+model_estimation: base_main:  Loaded pickled data successfully
+svm_gist:  found file ... ../Data/results/best_svm_gist_coarse.pkl
+svm_gist:  found file ... ../Data/results/best_svm_gist_fine.pkl
+The final best parameters are {'kernel': 'linear', 'C': 0.01, 'gamma': 0.01} with a score of 0.584144
+Score:  0.59649122807
+cnf_metrix:  [[175  29  39  43]
+ [  9   9   3   5]
+ [  6   6  31   8]
+ [ 21  22  16  91]]
+
+ model_estimation: base_main:  Loaded pickled data successfully
+nn_gist:  found file ... ../Data/results/best_nn_gist_coarse.pkl
+MLP Perceptron
+Score:  0.615984405458
+cnf_metrix:  [[149  12  20  18]
+ [ 21  24  19  15]
+ [ 12   1  33   4]
+ [ 29  29  17 110]]
+
+model_estimation: base_main:  Loaded pickled data successfully
+rf_Coh:  found file ... ../Data/results/best_rf_coh_coarse.pkl
+Random Forest
+Score:  0.462890625
+cnf_metrix:  [[204  49  79 114]
+ [  0   0   0   0]
+ [  0   0   0   0]
+ [  6  17  10  33]]
+
+
+model_estimation: base_main:  Loaded pickled data successfully
+ab_coh:  found file ... ../Data/results/best_ab_coh_coarse.pkl
+AdaBoost Classifier
+Score:  0.46484375
+cnf_metrix:  [[202  35  63  86]
+ [  1  12   9  37]
+ [  5  14  16  16]
+ [  2   5   1   8]]
+
+
+
+
+\begin{table}[h]
+  \caption{Confusion matrix for Test data results}
+  \label{test-results}
+  \centering
+  \begin{tabular}{ccc|cc|cc}
+    \toprule
+		     							& 	\multicolumn{4}{c}{Y30}	             \\\hline
+    \multirow{2}{8em}{HGST}				&	1477088		&	17520	   &   5 & 6 \\
+    									&		57		&	581		   &   5 & 6 \\\hline
+    \multirow{2}{8em}{Hitachi}			&	2773099		&	79624	   &   5 & 6 \\
+    									&	142			&	2687	   &   5 & 6 \\\hline
+    \multirow{2}{8em}{Samsung}			&	1123		&		2	   &   5 & 6 \\
+    									&	1			&		11	   &   5 & 6 \\\hline
+    \multirow{2}{8em}{Toshiba}			&	11183		&		37	   &   5 & 6 \\
+    									&	7			&		32	   &   5 & 6 \\\hline
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[t]
+  \caption{Accuracy values of the models on GIST and CoH feture vectors}
+  \label{accracy-table}
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    \multicolumn{2}{c}{Classification}                   \\
+    \cmidrule{1-2}
+    Model     & Feature Type     & Score \\
+    \midrule
+    SVC & GIST features  & 0.59649122807     \\
+    ML Perceptron     & GIST features & 0.615984405458      \\
+    Random Forest     & Color Hist       & 0.462890625  \\
+    AdaBoost     & Color Hist       & 0.46484375  \\
+    \bottomrule
+  \end{tabular}
+\end{table}

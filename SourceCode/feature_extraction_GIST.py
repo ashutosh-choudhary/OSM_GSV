@@ -50,33 +50,9 @@ class features_GIST:
         print "\nfeature_ext_gist: " + "Dataset created"
         print "feature_ext_gist: " + "N = " + str(len(data_set))
 
-        #print "\nfeature_ext_gist: " + "Before shuffle stats: "
-        #first_column = [row[0] for row in data_set]
-        #second_column = [row[1] for row in data_set]
-        #third_column = [row[2] for row in data_set]
-        #last_column = [row[len(data_set[0]) - 1] for row in data_set]
-        #print first_column
-        #print second_column
-        #print third_column
-        #print last_column
-        #print "feature_ext_gist: " + str(type(first_column[0])) + " " + str(type(second_column[0])) + " " + str(type(third_column[0]))
-        #print "feature_ext_gist: " + str(type(last_column[0]))
-
         print "\nfeature_ext_gist: " + "Sending for shuffle..."
         data_set = self.shuffle_data(data_set)
         print "feature_ext_gist: " + "Shuffle successful!"
-
-        #print "\nfeature_ext_gist: " + "After shuffle stats: "
-        #first_column = [row[0] for row in data_set]
-        #second_column = [row[1] for row in data_set]
-        #third_column = [row[2] for row in data_set]
-        #last_column = [row[len(data_set[0]) - 1] for row in data_set]
-        #print first_column
-        #print second_column
-        #print third_column
-        #print last_column
-        #print "feature_ext_gist: " + str(type(first_column[0])) + " " + str(type(second_column[0])) + " " + str(type(third_column[0]))
-        #print "feature_ext_gist: " + str(type(last_column[0]))
 
         print "\nfeature_ext_gist: " + "Sending for pickle..."
         pickle_file = self.pickle_data(data_set)

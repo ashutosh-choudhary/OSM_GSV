@@ -4,7 +4,10 @@ import time
 import constants as c
 
 class extract_all_classes:
-
+    """
+    A class to extract information about all the available
+    amenity and shop tag info from http://taginfo.openstreetmap.org/
+    """
     def __init__(self):
         self
 
@@ -28,20 +31,23 @@ class extract_all_classes:
         total_wiki_verified = 0
         for i in range(1, c.NUMBER_OF_PAGES_CLASS_SCRAPPING + 1):
             url = c.CLASS_SCRAPPER_URL % i
-            response = urllib.urlopen(url)
-            raw_data = json.loads(response.read())
-            num_classes_current_page = len(raw_data["data"])
-            for j in range(0, num_classes_current_page):
-                total_num_classes += 1
-                if raw_data["data"][j]["in_wiki"] == True:
-                    total_wiki_verified += 1
-                    wiki_verified[raw_data["data"][j]["value"]] = raw_data["data"][j]["count"]
-                    print "extract_all_classes: " + raw_data["data"][j]["value"] + " " + str(raw_data["data"][j]["fraction"]) + " " + str(raw_data["data"][j]["count"])
-
+            try:
+                response = urllib.urlopen(url)
+                raw_data = json.loads(response.read())
+                num_classes_current_page = len(raw_data["data"])
+                for j in range(0, num_classes_current_page):
+                    total_num_classes += 1
+                    if raw_data["data"][j]["in_wiki"] == True:
+                        total_wiki_verified += 1
+                        wiki_verified[raw_data["data"][j]["value"]] = raw_data["data"][j]["count"]
+                        print "extract_all_classes: " + raw_data["data"][j]["value"] + " " + str(raw_data["data"][j]["fraction"]) + " " + str(raw_data["data"][j]["count"])
+            except Exception as e:
+                print 'Could not extract page ', url
         print "\n" + "extract_all_classes: " + "Total: " + str(total_num_classes)
         print "extract_all_classes: " + "Wiki Verified: " + str(total_wiki_verified) + "\n\n"
 
         end_scrapping_classes = time.time()
+
         time_scrapping_classes_s = end_scrapping_classes - start_scraping_classes
         time_scrapping_classes_m, time_scrapping_classes_s = divmod(time_scrapping_classes_s, 60)
         time_scrapping_classes_h, time_scrapping_classes_m = divmod(time_scrapping_classes_m, 60)

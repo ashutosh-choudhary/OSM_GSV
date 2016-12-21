@@ -16,15 +16,8 @@ class extract_images:
         self
 
     def main(self, classes_dict):
-
-        #Extracting matlab file to access image URLs from SUN database
-        print "extract_images: " + "Loading mat..."
-
-        mat = scipy.io.loadmat('../Data/SUN_urls.mat')
-        for key, value in mat.items():
-            print key + " " + str(len(mat[key]))
-
         """
+        Extract relevant labels and plot a bar graph
         The following is observed from mat:
         mat                     - dictionary with three keys "SUN", "__version__", "__header__", "__global__"
         ..["SUN"]               - an ndarray which is just an enclosement of size 1
@@ -55,23 +48,16 @@ class extract_images:
         File Info:
         1.0
         MATLAB 5.0 MAT-file, Platform: PCWIN64, Created on: Mon Jan 17 22:26:14 2011
+        :param classes_dict:
+        :return:
         """
-     #
-     #   url = mat["SUN"][0][0][2][0][0][0]
-     #   print url
-     #   try:
-     #       response = urllib2.urlopen(url)
-     #   except urllib2.HTTPError, e:
-     #       print "extract_images: Error: Couldn't open url " + url + " due to error code " + str(e.code)
-     #   else:
-     #       print "extract_images: Downloading image"
-     #       local_path = "../Data/images/" + "t/"
-     #       file_name = "test_image.jpg"
-     #       if not os.path.exists(local_path):
-     #           os.makedirs(local_path)
-     #       full_filename = os.path.join(local_path, file_name)
-     #       urllib.urlretrieve(url, full_filename)
-     #
+
+        #Extracting matlab file to access image URLs from SUN database
+        print "extract_images: " + "Loading mat..."
+
+        mat = scipy.io.loadmat('../Data/SUN_urls.mat')
+        for key, value in mat.items():
+            print key + " " + str(len(mat[key]))
 
         print "extract_images: " + "Number of classes: "
         print "extract_images: " + str(len(mat["SUN"][0]))
@@ -79,9 +65,9 @@ class extract_images:
         print "extract_images: " + "Number of images per class: "
         print "extract_images: " + str(len(mat["SUN"][0][0][2][0]))
 
-        print "extract_images: " + mat["SUN"][0][899][2][0][0][0]
-        print "extract_images: " + str(type(mat["SUN"][0][899][2][0][0][0]))
-        print "extract_images: " + str(len(mat["SUN"][0][899][2][0][0][0]))
+        #print "extract_images: " + mat["SUN"][0][899][2][0][0][0]
+        #print "extract_images: " + str(type(mat["SUN"][0][899][2][0][0][0]))
+        #print "extract_images: " + str(len(mat["SUN"][0][899][2][0][0][0]))
 
         #Getting all available image labels from SUN database
         available_img_labels = []
@@ -111,7 +97,7 @@ class extract_images:
 
         self.plot_class_data_availability(od_classes)
         self.plot_image_data_availability(od_images)
-        self.plot_class_with_image_data(collec.OrderedDict(classes_sorted), collec.OrderedDict(corresponding_labels_sorted))
+        self.plot_class_with_image_data(classes_dict, images_dict)
 
         ############# Downloading the dataset ###############
 
@@ -140,6 +126,11 @@ class extract_images:
 
 
     def plot_class_data_availability(self, dict_plot):
+        """
+        Method to plot top 20 wiki verified classes in OSM data with their number of tags
+        :param dict_images: A dictionary containing the data described
+        :return:
+        """
         fig = plt.figure()
         ax = fig.add_subplot(111)
         bin = np.arange(len(dict_plot))
@@ -152,6 +143,12 @@ class extract_images:
         plt.show()
 
     def plot_image_data_availability(self, dict_images):
+        """
+        Method to plot images with their count values
+        :param dict_plot: A dictionary of all classes and the number of avialble OSM tags
+        :param dict_images: A didctionary of all image class and the number of available Image tags
+        :return:
+        """
         fig = plt.figure()
         ax = fig.add_subplot(111)
         bin = np.arange(len(dict_images))
@@ -164,33 +161,34 @@ class extract_images:
         plt.show()
 
     def plot_class_with_image_data(self, dict_plot, dict_images):
-
+        """
+        Method to plot split bar graphs with both number of OSM
+        tags ond number of available images in log space
+        :param dict_plot:
+        :param dict_images:
+        :return:
+        """
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        label_index = 0
-        dict_tags = {}
         bar_width = 0.45
-        len_classes = float(len(dict_plot))
-        len_images = float(len(dict_images))
+        num_labels = []
+        num_images = []
+        labels = []
 
-        for class_label, tag_count in dict_plot.items():
-            class_label = class_label.replace("_"," ")
-            image_index = dict_images.keys().index(class_label)
-            total_index = label_index/len_classes + image_index/len_images
-            print class_label + " " + str(label_index) + " + " + str(image_index) + " = " + str(total_index)
-            dict_tags[class_label] = [tag_count, dict_images[class_label][1], total_index]
-            label_index += 1
+        for label1, label2 in c.TAG_EQUIVALENCE.items():
+            labels += [label1]
+            num_labels += [dict_plot[label1]]
+            num_images += [dict_images[label2]]
 
-        tags_sorted = sorted(dict_tags.items(), key=lambda  x: x[1][2])
-        print tags_sorted
-        od_tags_labels = collec.OrderedDict(tags_sorted[:NUM_OF_ELEMS_PLOT])
-        num_labels = np.array(od_tags_labels.values())[:, 0]
-        num_images = np.array(od_tags_labels.values())[:, 1]
-        bin = np.arange(len(od_tags_labels))
-        rects1 = plt.bar(bin, num_labels*100/np.mean(num_labels),bar_width, label='Num of Tags', align='center', color='b')
-        rects2 = plt.bar(bin + bar_width, num_images*100/np.mean(num_images),bar_width, label='Numn of Images', align='center', color='r')
+        num_labels = np.array(num_labels)
+        num_images = np.array(num_images)
+        labels = np.array(labels)
+
+        bin = np.arange(len(labels))
+        rects1 = plt.bar(bin, np.log10(num_labels),bar_width, label='log(Num of Tags)', align='center', color='b')
+        rects2 = plt.bar(bin + bar_width, np.log(num_images),bar_width, label='log(Num of Images)', align='center', color='r')
         plt.xlim([-bar_width,bin.size])
-        plt.xticks(range(len(od_tags_labels)), od_tags_labels.keys(), rotation='vertical')
+        plt.xticks(range(len(labels)), labels, rotation='vertical')
         plt.title("Trade off between available data and class labels")
         plt.xlabel("Class labels")
         plt.ylabel("Number of tags/ Number of available images")
@@ -198,11 +196,54 @@ class extract_images:
         plt.show()
 
     def find_corresponding_labels(self, classes_dict, img_data, img_cnt):
+        """
+        Image manual label sync using a constant dictionary defined
+        :param classes_dict: A dictionary of all classes and the number of avialble OSM tags
+        :param img_data: A didctionary of all image class and the number of available Image tags
+        :param img_cnt: Image counts
+        :return:
+        """
         class_word = classes_dict.keys()
         class_word_cnt = classes_dict.values()
         for j in range(0, len(class_word)):
             class_word[j] = class_word[j].replace("_", " ")
-            print "extract_images: c: " + class_word[j] + " " + str(class_word_cnt[j])
+            #print "extract_images: c: " + class_word[j] + " " + str(class_word_cnt[j])
+
+        for i in range(0, len(img_data)):
+    #        img_data[i] = img_data[i].split("\\")[1].replace("_", " ")
+            print "extract_images: i: " + img_data[i] + " " + str(img_cnt[i])
+
+        synonyms_dict = {}
+        synonyms_dict_list = {}
+
+        for cw in range(0, len(class_word)):
+            if not synonyms_dict.has_key(class_word[cw]):
+                synonyms_dict[class_word[cw]] = [class_word[cw]]
+
+        for labels, values in synonyms_dict.items():
+            synonyms_dict_list[labels] = [[],0]
+            #write a function here to find good intersections
+            for class_check in values:
+                if class_check in img_data:
+                    index = img_data.index(class_check)
+                    synonyms_dict_list[labels][0].append((img_data[index],img_cnt[index]))
+                    synonyms_dict_list[labels][1] += img_cnt[index]
+
+        return synonyms_dict_list
+
+    def find_corresponding_labels_synonyms(self, classes_dict, img_data, img_cnt):
+        """
+        Image automatic label sync using thesaurus API
+        :param classes_dict:
+        :param img_data:
+        :param img_cnt:
+        :return:
+        """
+        class_word = classes_dict.keys()
+        class_word_cnt = classes_dict.values()
+        for j in range(0, len(class_word)):
+            class_word[j] = class_word[j].replace("_", " ")
+            #print "extract_images: c: " + class_word[j] + " " + str(class_word_cnt[j])
 
         for i in range(0, len(img_data)):
     #        img_data[i] = img_data[i].split("\\")[1].replace("_", " ")
@@ -217,12 +258,7 @@ class extract_images:
             turl = c.THESAURUS_URL %class_word[cw]
             response = urllib.urlopen(turl)
             raw_data = json.loads(response.read())
-    #        response = urllib2.urlopen(turl)
-    #        if response.code ==  200:
-    #            raw_data = json.loads(response.read())
-    #        else:
-    #            print "Couldn't open url " + turl + " due to error code " + response.code
-    #
+
             if not raw_data.has_key("error"):
                 num_respose_fields = len(raw_data["response"])
                 for rf in range(0, num_respose_fields):
@@ -242,5 +278,3 @@ class extract_images:
                     synonyms_dict_list[labels][1] += img_cnt[index]
 
         return synonyms_dict_list
-
-ei = extract_images()
